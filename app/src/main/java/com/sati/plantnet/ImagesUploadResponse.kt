@@ -1,8 +1,10 @@
 package com.sati.plantnet
 
-class PhotoDataModel {
+class ImagesUploadResponse {
 
         val data : MutableList<ItemModel> ? = null
         data class ItemModel(
-            val plant_name : String ? = null)
+            val plant_name : String ? = null
+        )
+
 }

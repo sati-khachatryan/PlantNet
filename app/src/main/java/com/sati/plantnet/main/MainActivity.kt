@@ -1,4 +1,4 @@
-package com.sati.plantnet
+package com.sati.plantnet.main
 
 
 import android.Manifest
@@ -8,16 +8,22 @@ import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Base64
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import com.sati.plantnet.ImagesUploadRequest
+import com.sati.plantnet.R
+import com.sati.plantnet.rest.base.RetrofitFactory
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.io.ByteArrayOutputStream
 
 
 class MainActivity : AppCompatActivity() {
@@ -28,6 +34,7 @@ class MainActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
+//        RetrofitFactory.retrofit.requestImageList(ImagesUploadRequest(images = mutableListOf("")))
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         imageView = findViewById<View>(R.id.imageView) as ImageView
@@ -67,11 +74,22 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
             data?.let {
                 val photo = it.extras?.get("data") as Bitmap?
+                val byteArrayOutputStream = ByteArrayOutputStream()
+                photo?.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
+                val byteArray: ByteArray = byteArrayOutputStream.toByteArray()
+                val encoded: String = Base64.encodeToString(byteArray, Base64.DEFAULT)
+                Log.d("redmi", "$encoded")
                 imageView?.setImageBitmap(photo)
                 send_image_btn.setOnClickListener {
-                GlobalScope.launch(Dispatchers.IO) {
-
-                }
+                    GlobalScope.launch(Dispatchers.IO) {
+                        RetrofitFactory.retrofit.requestImageList(
+                            ImagesUploadRequest(
+                                images = mutableListOf(
+                                    encoded
+                                )
+                            )
+                        )
+                    }
                 }
             }
         }

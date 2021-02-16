@@ -1,7 +1,5 @@
 package com.sati.plantnet
 
-class PhotoModel {
+class ImagesUploadRequest(val images: MutableList<String>) {
 
-    val images : MutableList<ItemModel> ? = null
-    data class ItemModel( val imagePath : String? = "" )
 }
