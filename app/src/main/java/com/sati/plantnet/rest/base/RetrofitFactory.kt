@@ -9,7 +9,7 @@ object RetrofitFactory {
 
     val retrofit = Retrofit.Builder()
         .addConverterFactory(GsonConverterFactory.create())
-        .baseUrl("https://api.plant.id/")
+        .baseUrl("https://api.plant.id/v2/identify/T6Wenutxq2JsnfHZHa2okhs0tYuAiM2pc0rOnBfTyl9pinihOo/")
         .build()
         .create(IPhotoAPIService::class.java)
 

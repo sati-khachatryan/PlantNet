@@ -17,12 +17,16 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.sati.plantnet.ImagesUploadRequest
+import com.sati.plantnet.ImagesUploadResponse
 import com.sati.plantnet.R
 import com.sati.plantnet.rest.base.RetrofitFactory
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.io.ByteArrayOutputStream
 
 
@@ -78,17 +82,50 @@ class MainActivity : AppCompatActivity() {
                 photo?.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
                 val byteArray: ByteArray = byteArrayOutputStream.toByteArray()
                 val encoded: String = Base64.encodeToString(byteArray, Base64.DEFAULT)
-                Log.d("redmi", "$encoded")
+//                Log.d("redmi", "$encoded")
+
+                RetrofitFactory.retrofit.requestImageList(mutableListOf(encoded))
+                    .enqueue(object : Callback<ImagesUploadResponse> {
+
+//                    override fun onFailure(call: Call<List<ImagesUploadResponse>>, t: Throwable) {
+//                        Log.d ("redmi" , "${t.message}")
+//                    }
+//
+//                    override fun onResponse(
+//                        call: Call<List<ImagesUploadResponse>>,
+//                        response: Response<List<ImagesUploadResponse>>
+//                    ) {
+////                        response?.let {
+////                            if (response.isSuccessful) {
+////                                response.body()?
+////                            }
+////                        }
+//                        Log.d ("redmi" , "111  ${response.isSuccessful}")
+//                    }
+
+                        override fun onFailure(call: Call<ImagesUploadResponse>, t: Throwable) {
+                            Log.d("redmi", "${t.message}")
+                        }
+
+                        override fun onResponse(
+                            call: Call<ImagesUploadResponse>,
+                            response: Response<ImagesUploadResponse>
+                        ) {
+                            Log.d("redmi", "sugg  ${response.body()?.suggestions?.get(0)}")
+                        }
+
+                    })
                 imageView?.setImageBitmap(photo)
                 send_image_btn.setOnClickListener {
                     GlobalScope.launch(Dispatchers.IO) {
-                        RetrofitFactory.retrofit.requestImageList(
-                            ImagesUploadRequest(
-                                images = mutableListOf(
-                                    encoded
-                                )
-                            )
-                        )
+//                        RetrofitFactory.retrofit.requestImageList(
+//                            ImagesUploadRequest(
+//                                images = mutableListOf(
+//                                    encoded
+//                                )
+//                            )
+//                        )
+
                     }
                 }
             }
