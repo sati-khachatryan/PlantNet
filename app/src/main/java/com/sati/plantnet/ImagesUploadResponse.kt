@@ -1,10 +1,18 @@
 package com.sati.plantnet
 
-class ImagesUploadResponse {
+import com.google.gson.annotations.SerializedName
 
-        val data : MutableList<ItemModel> ? = null
-        data class ItemModel(
-            val plant_name : String ? = null
-        )
-
+data class ImagesUploadResponse (
+    @SerializedName("suggestions") val suggestions : List<Suggestions>){
+    data class Suggestions (
+        @SerializedName("id") val id : Int,
+        @SerializedName("plant_name") val plant_name : String,
+        @SerializedName("probability") val probability : Double,
+        @SerializedName("confirmed") val confirmed : Boolean
+    )
 }
+
+
+
+
+
